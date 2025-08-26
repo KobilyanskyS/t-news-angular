@@ -1,0 +1,28 @@
+@import './variables.less';
+@import './mixins.less';
+
+.wrapper__fs {
+  background-color: @light_gray;
+}
+.wrapper {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+@media (max-width: 820px) {
+  .wrapper {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .wrapper {
+    padding: 0 8px;
+  }
+}

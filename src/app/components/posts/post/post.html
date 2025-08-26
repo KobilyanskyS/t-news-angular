@@ -1,0 +1,25 @@
+<div class="post__container">
+  <div class="post">
+    <div class="post__header">
+      <div class="post__img">
+        <img [src]="post.author_avatar" alt="" />
+      </div>
+      <a class="post__name">{{ post.author_name }}</a>
+    </div>
+    <div class="post__content">
+      {{ post.content }}
+    </div>
+    <div class="post__footer">
+      <button class="post__button">
+        <img src="/Heart.svg" alt="" class="post__button__img" />
+        <span class="post__button__likes-counter">{{ post.likes.length }}</span></button
+      ><button class="post__button post__button__comments" (click)="toggleComments()">
+        <p>Комментарии <span class="post__button__comments-counter">{{ post.comments.length }}</span></p>
+      </button>
+    </div>
+  </div>
+
+  @if (showComments) {
+    <app-comments-block [comments]="post.comments"></app-comments-block>
+  }
+</div>
