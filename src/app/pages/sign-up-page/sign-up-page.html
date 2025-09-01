@@ -2,13 +2,50 @@
     <div class="sign-up-form">
         <div class="sign-up-form__container">
             <h3 class="sign-up-form__title">Регистрация</h3>
-            <form action="" class="sign-up-form__elements">
+            <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="sign-up-form__elements">
                 <div class="sign-up-form__inputs">
-                    <input type="text" name="sign-up" class="sign-up-form__input" placeholder="Логин">
-                    <input type="password" name="password" class="sign-up-form__input" placeholder="Пароль">
-                    <input type="password" name="password_repeat" class="sign-up-form__input" placeholder="Повторите пароль">
+                    <div class="input-block">
+                        <input type="text" name="login" class="sign-up-form__input" formControlName="login" placeholder="Логин">
+                        @if (signUpForm.get('login')?.hasError('required') && signUpForm.get('login')?.touched) {
+                            <p class="error">Логин обязателен</p>
+                        }
+                        @if (signUpForm.get('login')?.hasError('minLength') && signUpForm.get('login')?.touched) {
+                             <p class="error">Логин должен состоять минимум из 3 символов</p>
+                        }
+                        @if (signUpForm.get('login')?.hasError('pattern') && signUpForm.get('login')?.touched) {
+                            <p class="error">Логин может состоять только из латинских букв, цифр и _</p>
+                        }
+                        @if (signUpForm.get('login')?.hasError('maxLength') && signUpForm.get('login')?.touched) {
+                             <p class="error">Логин должен состоять максимум из 20 символов</p>
+                        }
+                        @if (serverError && serverError.includes('уже существует')) {
+                            <p class="error">{{ serverError }}</p>
+                        }
+                    </div>
+                    <div  class="input-block">
+                        <input type="password" name="password" class="sign-up-form__input" formControlName="password" placeholder="Пароль">
+                        @if (signUpForm.get('password')?.hasError('required') && signUpForm.get('password')?.touched) {
+                            <p class="error">Пароль обязателен</p>
+                        }
+                        @if (signUpForm.get('password')?.hasError('minlength') && signUpForm.get('password')?.touched) { 
+                            <p class="error">Минимальная длина пароля 8 символов</p>
+                        }
+                        @if (signUpForm.get('password')?.hasError('pattern') && signUpForm.get('password')?.touched) { 
+                            <p class="error">Пароль должен содержать латинские заглавные и строчные буквы и цифры</p>
+                        }
+                    </div>
+                    <div  class="input-block">
+                        <input type="password" name="passwordConfirm" class="sign-up-form__input" formControlName="passwordConfirm" placeholder="Повторите пароль">
+                        @if (signUpForm.hasError('passwordMismatch') && signUpForm.get('passwordConfirm')?.touched) {
+                            <p class="error">Пароли не совпадают</p>
+                        }
+                    </div>
+                    <div class="input-block">
+                        @if (serverError && !serverError.includes('уже существует')) {
+                            <p class="error">{{ serverError }}</p>
+                        }
+                    </div>
                 </div>
-                <div id="register-error" class="error-message"></div>
                 <div class="sign-up-form__buttons">
                     <button class="sign-up-form__button" routerLink="/log-in">Войти</button>
                     <input class="sign-up-form__button sign-up_form_button__log_btn" type="submit" value="Зарегистрироваться">

@@ -9,8 +9,23 @@
                         </form> 
                     </div>
                     <div class="header__links">
-                        <a routerLink="/sign-up" class="header_links__link"><p>Зарегистрироваться </p><img width="24px" src="arrow-in-right.svg" alt=""></a>
-                        <a routerLink="/log-in" class="header_links__link"><p>Войти </p><img width="24px" src="arrow-in-right.svg" alt=""></a>
+                        @if (!isAuthPage()) {
+                            @if (isAuthenticated()) {
+                                <a routerLink="/profile" class="header_links__link">
+                                    <p>{{ authService.getCurrentUser()?.name }}</p>
+                                    <img width="24px" [src]="authService.getCurrentUser()?.avatar || '/Profile.svg'" alt="Profile">
+                                </a>
+                            } @else {
+                                <a routerLink="/sign-up" class="header_links__link">
+                                    <p>Зарегистрироваться</p>
+                                    <img width="24px" src="arrow-in-right.svg" alt="">
+                                </a>
+                                <a routerLink="/log-in" class="header_links__link">
+                                    <p>Войти</p>
+                                    <img width="24px" src="arrow-in-right.svg" alt="">
+                                </a>  
+                            }
+                        }
                     </div>
                 </div>
         </header>

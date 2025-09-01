@@ -4,6 +4,6 @@ export interface Comment {
   id: number;
   userId: number;
   content: string;
-  author_name?: string;
-  author_avatar?: string;
+  author_name: User["name"];
+  author_avatar: User["avatar"];
 }

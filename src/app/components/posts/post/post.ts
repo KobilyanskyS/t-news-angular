@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommentsBlock } from '../../comments/comments-block/comments-block';
+import { CommentsBlockComponent } from '../../comments/comments-block/comments-block';
 import { Post } from '../../../models/post';
 
 @Component({
   selector: 'app-post',
-  imports: [CommentsBlock],
+  imports: [CommentsBlockComponent],
   templateUrl: './post.html',
   styleUrl: './post.less'
 })

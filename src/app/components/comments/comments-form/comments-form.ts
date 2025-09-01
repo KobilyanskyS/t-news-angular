@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './comments-form.html',
   styleUrl: './comments-form.less'
 })
-export class CommentsForm {
+export class CommentsFormComponent {
 
 }

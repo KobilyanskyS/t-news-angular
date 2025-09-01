@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { forkJoin, map } from 'rxjs';
 import { Post } from '../../models/post';
-import { Api } from '../api/api';
+import { ApiService } from '../api/api';
 import { User } from '../../models/user';
 import { Comment } from '../../models/comment';
 
@@ -9,7 +9,7 @@ import { Comment } from '../../models/comment';
   providedIn: 'root',
 })
 export class PostsService {
-  private api = inject(Api);
+  private api = inject(ApiService);
 
   getPostsWithUsers() {
     return forkJoin({

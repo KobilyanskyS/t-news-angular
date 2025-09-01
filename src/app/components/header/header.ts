@@ -1,12 +1,32 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { filter } from "rxjs/operators";
+import { AuthService } from '../../services/auth/auth';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterModule],
   templateUrl: './header.html',
-  styleUrl: './header.less'
+  styleUrl: './header.less',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Header {
+export class HeaderComponent {
+  router = inject(Router);
+  authService = inject(AuthService);
+  
+  currentPath = signal<string>(this.router.url);
+  isAuthenticated = this.authService.isAuthenticated;
 
+  constructor() {
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((e) => {
+        this.currentPath.set(e.urlAfterRedirects || e.url);
+      });
+  }
+
+  isAuthPage(): boolean {
+    return this.currentPath() === "/log-in" || this.currentPath() === "/sign-up";
+  }
 }

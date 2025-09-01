@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Api } from '../api/api';
+import { ApiService } from '../api/api';
 import { User } from '../../models/user';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 
 export class UserService {
-  private api = inject(Api);
+  private api = inject(ApiService);
 
   getAllPosts(): Observable<User[]> {
       return this.api.get<User[]>('users.json');

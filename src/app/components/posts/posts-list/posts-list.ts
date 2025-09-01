@@ -9,7 +9,7 @@ import { Post } from '../../../models/post';
   templateUrl: './posts-list.html',
   styleUrl: './posts-list.less'
 })
-export class PostsList {
+export class PostsListComponent {
 private postService = inject(PostsService);
   
   posts: Post[] = [];
