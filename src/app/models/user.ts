@@ -3,6 +3,7 @@ export type User = {
   login: string;
   name: string;
   avatar: string;
+  subscriptions: number[];
 }
 
 export type UserData = {

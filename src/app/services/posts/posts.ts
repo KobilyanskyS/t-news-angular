@@ -11,9 +11,25 @@ import { Comment } from '../../models/comment';
 export class PostsService {
   private api = inject(ApiService);
 
-  getPostsWithUsers() {
+  getAllPosts() {
     return forkJoin({
       posts: this.api.get<Post[]>('posts.json'),
+      users: this.api.get<User[]>('users.json'),
+    }).pipe(
+      map(({ posts, users }) => {
+        return posts.map((post) => ({
+          ...post,
+          author_name: this.findUserName(users, post.author_id),
+          author_avatar: this.findUserAvatar(users, post.author_id),
+          comments: this.enrichComments(post.comments, users)
+        }));
+      })
+    );
+  }
+
+  getSubscriptionsPosts() {
+    return forkJoin({
+      posts: this.api.get<Post[]>('api/posts'),
       users: this.api.get<User[]>('users.json'),
     }).pipe(
       map(({ posts, users }) => {

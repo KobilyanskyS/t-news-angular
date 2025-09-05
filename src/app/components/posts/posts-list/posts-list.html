@@ -1,9 +1,5 @@
 <div class="cards">
-  @if (isLoading) {
-    <div>Загрузка...</div>
-  } @else {
     @for (post of posts; track post.id) {
       <app-post [post]="post"></app-post>
     }
-  }
 </div>

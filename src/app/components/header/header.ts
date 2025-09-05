@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from "rxjs/operators";
 import { AuthService } from '../../services/auth/auth';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',

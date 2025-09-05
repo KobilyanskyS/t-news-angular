@@ -37,7 +37,7 @@ export class AuthService {
     );
   }
 
-    checkAuthStatus(): void {
+  checkAuthStatus(): void {
     const userId = this.getUserIdFromCookies();
     if (userId) {
       const storedUser = this.getUserFromStorage();
@@ -68,7 +68,7 @@ export class AuthService {
     }
   }
 
-  private getUserFromStorage(): User | null {
+  getUserFromStorage(): User | null {
     try {
       const userStr = localStorage.getItem('currentUser');
       return userStr ? JSON.parse(userStr) : null;
