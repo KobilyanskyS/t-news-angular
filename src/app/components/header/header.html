@@ -11,7 +11,7 @@
                     <div class="header__links">
                         @if (!isAuthPage()) {
                             @if (isAuthenticated()) {
-                                <a routerLink="/profile" class="header_links__link">
+                                <a [routerLink]="userId" class="header_links__link">
                                     <p>{{ authService.getCurrentUser()?.name }}</p>
                                     <img width="24px" [src]="authService.getCurrentUser()?.avatar || '/Profile.svg'" alt="Profile">
                                 </a>

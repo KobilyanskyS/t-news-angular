@@ -1,0 +1,111 @@
+<div class="wrapper">
+  <main class="main">
+    @if (userInfo) {
+    <div id="profile-root" class="profile">
+      <div class="profile">
+        <div class="profile__image-block">
+          <div class="profile__avatar">
+            <img [src]="userInfo.avatar" alt="" class="profile__avatar-image" />
+            @if (isUploading) {
+            <div class="avatar-overlay">
+              <div class="spinner"></div>
+            </div>
+            }
+          </div>
+          @if (isCurrentUser) {
+          <button
+            class="profile__change_avatar_btn"
+            (click)="changeAvatar()"
+            [disabled]="isUploading"
+          >
+            {{ isUploading ? "Загрузка..." : "Изменить фото" }}
+          </button>
+          <input
+            #avatarInput
+            type="file"
+            accept="image/*"
+            style="display: none"
+            (change)="onAvatarSelected($event)"
+          />
+          }
+        </div>
+        <div class="profile__info-block">
+          <div class="profile__name-block">
+            @if (isEditingName) {
+            <div class="edit-container">
+              <input
+                type="text"
+                class="profile__name-input"
+                [(ngModel)]="tempName"
+                (keydown)="onNameKeydown($event)"
+                #nameInput
+                autofocus
+              />
+              <button class="save-btn" (click)="saveName()" title="Сохранить">
+                <img src="/ok.svg" alt="Сохранить" width="24px" />
+              </button>
+            </div>
+            } @else {
+            <h1 class="profile__name">{{ userInfo.name }}</h1>
+            @if (isCurrentUser) {
+            <button
+              class="profile__edit-name-btn"
+              (click)="startEditingName()"
+              title="Редактировать имя"
+            >
+              <img src="/edit.svg" alt="" width="24px" />
+            </button>
+            } }
+          </div>
+
+          <div
+            class="profile__about-block"
+            [class.editing-about]="isEditingAbout"
+          >
+            @if (isEditingAbout) {
+            <div class="edit-container">
+              <textarea
+                class="profile__about-textarea"
+                [(ngModel)]="tempAbout"
+                (keydown)="onAboutKeydown($event)"
+                #aboutInput
+                autofocus
+                rows="3"
+              ></textarea>
+              <button class="save-btn" (click)="saveAbout()" title="Сохранить">
+                <img src="/ok.svg" alt="Сохранить" width="16px" />
+              </button>
+            </div>
+            } @else {
+            <p class="profile__about">{{ userInfo.about }}</p>
+            @if (isCurrentUser) {
+            <button
+              class="profile__edit-about-btn"
+              (click)="startEditingAbout()"
+              title="Редактировать обо мне"
+            >
+              <img src="/edit.svg" alt="" width="16px" />
+            </button>
+            } }
+          </div>
+        </div>
+        <div class="profile__subscribe-block">
+          @if (!isCurrentUser) {
+          <button class="profile__subscribe-button subscribed">
+            Отписаться
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+    @if (isCurrentUser) {
+    <app-post-form></app-post-form>
+    } } @if (isLoading) {
+    <div class="message">Загрузка профиля...</div>
+    } @else if (posts.length === 0) {
+    <div class="message">Посты не найдены.</div>
+    } @else {
+    <app-posts-list [posts]="posts"></app-posts-list>
+    }
+  </main>
+</div>

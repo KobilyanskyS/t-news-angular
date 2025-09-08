@@ -9,7 +9,7 @@ import { User, UserData } from '../../models/user';
 })
 export class AuthService {
   private api = inject(ApiService);
-  private cookieService  = inject(CookieService);
+  private cookieService = inject(CookieService);
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -21,7 +21,7 @@ export class AuthService {
 
   signUp(userData: UserData): Observable<User> {
     return this.api.post<User>('api/register', userData).pipe(
-      tap(user => {
+      tap((user) => {
         this.setCurrentUser(user);
         console.log(user);
       })
@@ -30,7 +30,7 @@ export class AuthService {
 
   logIn(userData: UserData): Observable<User> {
     return this.api.post<User>('api/login', userData).pipe(
-      tap(user => {
+      tap((user) => {
         this.setCurrentUser(user);
         console.log(user);
       })
@@ -47,7 +47,7 @@ export class AuthService {
         this.api.get<User>(`api/user/${userId}`).subscribe({
           next: (user) => {
             this.setCurrentUser(user);
-          }
+          },
         });
       }
     } else {
@@ -98,6 +98,10 @@ export class AuthService {
     );
   }
 
+  updateUser(updatedUser: User): void {
+    this.setCurrentUser(updatedUser);
+  }
+
   clearAuthData(): void {
     this.currentUserSubject.next(null);
     localStorage.removeItem('currentUser');
@@ -111,5 +115,4 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
-
 }

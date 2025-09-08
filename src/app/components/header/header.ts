@@ -16,6 +16,7 @@ export class HeaderComponent {
   
   currentPath = signal<string>(this.router.url);
   isAuthenticated = this.authService.isAuthenticated;
+  userId= this.authService.getUserFromStorage()?.id as unknown as string;
 
   constructor() {
     this.router.events

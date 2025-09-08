@@ -4,7 +4,7 @@
       <div class="post__img">
         <img [src]="post.author_avatar" alt="" />
       </div>
-      <a class="post__name">{{ post.author_name }}</a>
+      <a class="post__name" [routerLink]="['/', post.author_id]">{{ post.author_name }}</a>
     </div>
     <div class="post__content">
       {{ post.content }}

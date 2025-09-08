@@ -10,7 +10,20 @@ import { Observable } from 'rxjs';
 export class UserService {
   private api = inject(ApiService);
 
-  getAllPosts(): Observable<User[]> {
-      return this.api.get<User[]>('users.json');
+  getUser(userId: User["id"]) {
+    return this.api.get<User>(`api/user/${userId}`);
   }
+
+  updateUserName(userId: User["id"], name: string) {
+    return this.api.patch<User>('api/user/name', { name })
+  }
+
+  updateUserAbout(userId: User["id"], about: string) {
+    return this.api.patch<User>('api/user/about', { about })
+  }
+
+  uploadAvatar(dataUrl: string): Observable<{ avatar: string }> {
+    return this.api.post<{ avatar: string }>('api/user/avatar', { dataUrl });
+  }
+
 }

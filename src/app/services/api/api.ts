@@ -18,6 +18,10 @@ export class ApiService {
     return this.http.post<T>(`${this.API_SERVER}/${url}`, body, {withCredentials: true});
   }
 
+  patch<T>(url: string, body: unknown): Observable<T> {
+    return this.http.patch<T>(`${this.API_SERVER}/${url}`, body, {withCredentials: true});
+  }
+
   delete<T>(url: string): Observable<T> {
     return this.http.delete<T>(`${this.API_SERVER}/${url}`, {withCredentials: true});
   }

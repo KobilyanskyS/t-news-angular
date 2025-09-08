@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Comment } from '../../../models/comment';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-comment',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './comment.html',
   styleUrl: './comment.less'
 })

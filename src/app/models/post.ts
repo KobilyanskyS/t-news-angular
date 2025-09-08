@@ -8,5 +8,6 @@ export type Post = {
   likes: number[];
   comments: Comment[];
   author_name: User["name"];
+  author_login: User["login"];
   author_avatar: User["avatar"];
 }

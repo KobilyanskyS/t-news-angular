@@ -21,6 +21,7 @@ export class PostsService {
           ...post,
           author_name: this.findUserName(users, post.author_id),
           author_avatar: this.findUserAvatar(users, post.author_id),
+          author_login: this.findUserLogin(users, post.author_id),
           comments: this.enrichComments(post.comments, users)
         }));
       })
@@ -37,6 +38,24 @@ export class PostsService {
           ...post,
           author_name: this.findUserName(users, post.author_id),
           author_avatar: this.findUserAvatar(users, post.author_id),
+          author_login: this.findUserLogin(users, post.author_id),
+          comments: this.enrichComments(post.comments, users)
+        }));
+      })
+    );
+  }
+
+  getUsersPosts(user_id: User["id"]) {
+   return forkJoin({
+      posts: this.api.get<Post[]>(`api/user/${user_id}/posts`),
+      users: this.api.get<User[]>('users.json'),
+    }).pipe(
+      map(({ posts, users }) => {
+        return posts.map((post) => ({
+          ...post,
+          author_name: this.findUserName(users, post.author_id),
+          author_avatar: this.findUserAvatar(users, post.author_id),
+          author_login: this.findUserLogin(users, post.author_id),
           comments: this.enrichComments(post.comments, users)
         }));
       })
@@ -54,6 +73,11 @@ export class PostsService {
   private findUserName(users: User[], userId: number): string {
     const user = users.find((u) => u.id === userId);
     return user?.name || 'Пользователь';
+  }
+
+  private findUserLogin(users: User[], userId: number): string {
+    const user = users.find((u) => u.id === userId);
+    return user?.login || '';
   }
 
   private findUserAvatar(users: User[], userId: number): string {
