@@ -4,9 +4,10 @@ import { Comment } from "./comment";
 export type Post = {
   id: number;
   content: string;
-  author_id: number;
   likes: number[];
   comments: Comment[];
+  commentsCount: number;
+  author_id: number;
   author_name: User["name"];
   author_login: User["login"];
   author_avatar: User["avatar"];

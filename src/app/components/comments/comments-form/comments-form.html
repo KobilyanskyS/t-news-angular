@@ -1,7 +1,14 @@
-<form class="comment-form">
+<form class="comment-form" (ngSubmit)="onSubmit()">
   <textarea
     class="form__input"
-    placeholder="Введите комментарий"
-  ></textarea
-  ><input class="form__btn" type="submit"/>
+    placeholder="{{ isAuthenticated ? 'Введите комментарий' : 'Войдите, чтобы комментировать' }}"
+    [(ngModel)]="commentContent"
+    [disabled]="!isAuthenticated || isSubmitting"
+    name="commentContent"
+  ></textarea>
+  <input 
+    class="form__btn" 
+    type="submit" 
+    [value]="isSubmitting ? 'Отправка...' : 'Отправить'"
+    [disabled]="!isAuthenticated || isSubmitting || !commentContent.trim()">
 </form>

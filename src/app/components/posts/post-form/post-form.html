@@ -1,7 +1,15 @@
-<form class="post-form">
+<form class="post-form" (ngSubmit)="onSubmit()">
   <textarea
     class="form__input"
-    placeholder="Введите текст поста"
-  ></textarea
-  ><input class="form__btn" type="submit"/>
+    placeholder="{{ isAuthenticated ? 'Введите текст поста' : 'Войдите, чтобы публиковать посты' }}"
+    [(ngModel)]="postContent"
+    [disabled]="!isAuthenticated || isSubmitting"
+    name="postContent"
+    rows="3"
+  ></textarea>
+  <input 
+    class="form__btn" 
+    type="submit" 
+    [value]="isSubmitting ? 'Публикация...' : 'Опубликовать'"
+    [disabled]="!isAuthenticated || isSubmitting || !postContent.trim()">
 </form>

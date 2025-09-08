@@ -93,7 +93,7 @@
   cursor: pointer;
 }
 
-.profile__subscribe-button{
+.profile__subscribe-button, .profile__exit-button{
   .button();
   padding:  8px 12px;
   background-color: #fff;
@@ -101,6 +101,11 @@
   font-size: 13px;
   font-weight: normal;
   outline: 1px solid #0010241F;
+  margin-left: 100px;
+}
+
+.profile__exit-button{
+  color: red;
 }
 
 
@@ -205,6 +210,9 @@
   }
   .cards{
     margin-top: 24px;
+  }
+  .profile__subscribe-button, .profile__exit-button{
+    margin: 0;
   }
 }
 

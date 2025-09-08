@@ -1,33 +1,40 @@
 <div class="wrapper_fs">
-    <div class="wrapper">
-        <header class="header">
-                <div class="header__container">
-                    <div class="header__base">
-                        <a routerLink="/" class="header__logo"><img src="t-bank.svg" width="29px" alt=""></a>
-                        <form class="header__search__form">
-                            <input type="text" name="search" class="header__search" placeholder="Поиск по T-News">
-                        </form> 
-                    </div>
-                    <div class="header__links">
-                        @if (!isAuthPage()) {
-                            @if (isAuthenticated()) {
-                                <a [routerLink]="userId" class="header_links__link">
-                                    <p>{{ authService.getCurrentUser()?.name }}</p>
-                                    <img width="24px" [src]="authService.getCurrentUser()?.avatar || '/Profile.svg'" alt="Profile">
-                                </a>
-                            } @else {
-                                <a routerLink="/sign-up" class="header_links__link">
-                                    <p>Зарегистрироваться</p>
-                                    <img width="24px" src="arrow-in-right.svg" alt="">
-                                </a>
-                                <a routerLink="/log-in" class="header_links__link">
-                                    <p>Войти</p>
-                                    <img width="24px" src="arrow-in-right.svg" alt="">
-                                </a>  
-                            }
-                        }
-                    </div>
-                </div>
-        </header>
-    </div>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__container">
+        <div class="header__base">
+          <a routerLink="/" class="header__logo"
+            ><img src="t-bank.svg" width="29px" alt=""
+          /></a>
+          <form class="header__search__form">
+            <input
+              type="text"
+              name="search"
+              class="header__search"
+              placeholder="Поиск по T-News"
+            />
+          </form>
+        </div>
+        <div class="header__links">
+          @if (!(isAuthPage$ | async)) { @if (isAuthenticated$ | async) {
+          <a [routerLink]="['/', userId$ | async]" class="header_links__link">
+            <p>{{ userName$ | async }}</p>
+            <div class="header__avatar">
+              <img width="24px" [src]="userAvatar$ | async" alt="Profile" />
+            </div>
+          </a>
+          } @else {
+          <a routerLink="/sign-up" class="header_links__link">
+            <p>Зарегистрироваться</p>
+            <img width="24px" src="arrow-in-right.svg" alt="" />
+          </a>
+          <a routerLink="/log-in" class="header_links__link">
+            <p>Войти</p>
+            <img width="24px" src="arrow-in-right.svg" alt="" />
+          </a>
+          } }
+        </div>
+      </div>
+    </header>
+  </div>
 </div>

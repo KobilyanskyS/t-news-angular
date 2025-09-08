@@ -91,21 +91,41 @@
         </div>
         <div class="profile__subscribe-block">
           @if (!isCurrentUser) {
-          <button class="profile__subscribe-button subscribed">
-            Отписаться
+          <button
+            class="profile__subscribe-button"
+            [class.profile__subscribe-button--subscribed]="isSubscribed"
+            (click)="toggleSubscription()"
+            [disabled]="isSubscribing"
+          >
+            {{
+              isSubscribing
+                ? "..."
+                : isSubscribed
+                ? "Отписаться"
+                : "Подписаться"
+            }}
+          </button>
+          } @else {
+          <button
+            class="profile__exit-button"
+            (click)="logout()"
+            [disabled]="isLoggingOut"
+          >
+            {{ isLoggingOut ? "Выход..." : "Выйти" }}
           </button>
           }
         </div>
       </div>
     </div>
     @if (isCurrentUser) {
-    <app-post-form></app-post-form>
+    <app-post-form (postCreated)="onPostCreated($event)"></app-post-form>
     } } @if (isLoading) {
     <div class="message">Загрузка профиля...</div>
     } @else if (posts.length === 0) {
     <div class="message">Посты не найдены.</div>
     } @else {
-    <app-posts-list [posts]="posts"></app-posts-list>
+    <app-posts-list [posts]="posts" (postDeleted)="onPostDeleted($event)">
+    </app-posts-list>
     }
   </main>
 </div>

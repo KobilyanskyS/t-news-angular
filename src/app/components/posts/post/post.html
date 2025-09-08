@@ -4,22 +4,60 @@
       <div class="post__img">
         <img [src]="post.author_avatar" alt="" />
       </div>
-      <a class="post__name" [routerLink]="['/', post.author_id]">{{ post.author_name }}</a>
+      <a class="post__name" [routerLink]="['/', post.author_id]">{{
+        post.author_name
+      }}</a>
+      @if (isAuthor) {
+      <button
+        class="post__delete-btn"
+        (click)="onDeletePost()"
+        [disabled]="isDeleting"
+        title="Удалить пост"
+      >
+        <img src="/delete.svg" alt="Удалить" width="16" height="16" />
+        {{ isDeleting ? "Удаление..." : "" }}
+      </button>
+      }
     </div>
     <div class="post__content">
       {{ post.content }}
     </div>
     <div class="post__footer">
-      <button class="post__button">
-        <img src="/Heart.svg" alt="" class="post__button__img" />
-        <span class="post__button__likes-counter">{{ post.likes.length }}</span></button
-      ><button class="post__button post__button__comments" (click)="toggleComments()">
-        <p>Комментарии <span class="post__button__comments-counter">{{ post.comments.length }}</span></p>
+      <button
+        class="post__button"
+        [class.post__button__like]="isLiked"
+        [disabled]="isLiking"
+        (click)="onLikeClick()"
+      >
+        <img
+          [src]="isLiked ? '/HeartFilled.svg' : '/Heart.svg'"
+          alt=""
+          class="post__button__img"
+        />
+        <span class="post__button__likes-counter">{{ post.likes.length }}</span>
+      </button>
+
+      <button
+        class="post__button post__button__comments"
+        [class.post__button__comments]="showComments"
+        (click)="toggleComments()"
+      >
+        <p>
+          Комментарии
+          <span class="post__button__comments-counter">{{
+            commentsCount
+          }}</span>
+        </p>
       </button>
     </div>
   </div>
 
   @if (showComments) {
-    <app-comments-block [comments]="post.comments"></app-comments-block>
+  <app-comments-block
+    [comments]="post.comments"
+    [postId]="post.id"
+    (commentsChanged)="onCommentsChanged()"
+  >
+  </app-comments-block>
   }
 </div>

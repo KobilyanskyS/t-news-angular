@@ -1,5 +1,5 @@
 import { Component, inject, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../../services/posts/posts';
 import { Post } from '../../models/post';
 import { PostsListComponent } from '../../components/posts/posts-list/posts-list';
@@ -20,6 +20,7 @@ export class ProfilePage {
   private postService = inject(PostsService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private router = inject(Router);
 
   @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
 
@@ -32,9 +33,13 @@ export class ProfilePage {
   private routeSub: Subscription = new Subscription();
 
   isCurrentUser = false;
+  isLoggingOut = false;
 
   isEditingName = false;
   isEditingAbout = false;
+
+  isSubscribing = false;
+  isSubscribed = false;
 
   tempName = '';
   tempAbout = '';
@@ -63,6 +68,11 @@ export class ProfilePage {
         next: ({ posts, user }) => {
           this.posts = posts;
           this.userInfo = user;
+          
+          if (currentUser && !this.isCurrentUser) {
+            this.isSubscribed = currentUser.subscriptions?.includes(userId) || false;
+          }
+          
           this.isLoading = false;
         },
         error: (err) => {
@@ -215,6 +225,72 @@ export class ProfilePage {
       event.preventDefault();
       this.cancelEditingAbout();
     }
+  }
+
+  onPostCreated(newPost: Post): void {
+    this.posts = [newPost, ...this.posts];
+  }
+
+  onPostDeleted(postId: any): void {
+    this.posts = this.posts.filter(post => post.id !== postId);
+  }
+
+    logout(): void {
+    if (this.isLoggingOut) return;
+    
+    this.isLoggingOut = true;
+    
+    this.authService.logOut().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.authService.clearAuthData();
+          this.router.navigate(['/']);
+        }
+      },
+      error: (error) => {
+        console.error('Ошибка при выходе:', error);
+        this.authService.clearAuthData();
+        this.router.navigate(['/']);
+      },
+      complete: () => {
+        this.isLoggingOut = false;
+      }
+    });
+  }
+
+    toggleSubscription(): void {
+    if (this.isSubscribing || this.isCurrentUser) return;
+
+    this.isSubscribing = true;
+    const targetUserId = this.userInfo.id;
+
+    const subscriptionAction = this.isSubscribed 
+      ? this.userService.unsubscribe(targetUserId)
+      : this.userService.subscribe(targetUserId);
+
+    subscriptionAction.subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.isSubscribed = !this.isSubscribed;
+          
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser) {
+            const updatedUser = {
+              ...currentUser,
+              subscriptions: response.subscriptions
+            };
+            this.authService.updateUser(updatedUser as User);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Ошибка при изменении подписки:', error);
+        alert('Не удалось изменить подписку');
+      },
+      complete: () => {
+        this.isSubscribing = false;
+      }
+    });
   }
 
   ngOnDestroy() {

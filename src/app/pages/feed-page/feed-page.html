@@ -3,7 +3,7 @@
     @if (isLoading) {
     <div class="message">Посты не найдены. Подпишитесь на кого-нибудь</div>
     } @else {
-    <app-posts-list [posts]="posts"></app-posts-list>
+    <app-posts-list [posts]="posts" (postDeleted)="onPostDeleted($event)"></app-posts-list>
     }
   </main>
 </div>

@@ -1,6 +1,5 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PostComponent } from '../post/post';
-import { PostsService } from '../../../services/posts/posts';
 import { Post } from '../../../models/post';
 
 @Component({
@@ -11,4 +10,23 @@ import { Post } from '../../../models/post';
 })
 export class PostsListComponent {
   @Input() posts!: Post[];
+  @Output() postDeleted = new EventEmitter<number>();
+
+  onLikeToggled(event: { postId: number; likes: number[] }): void {
+    const postIndex = this.posts.findIndex(p => p.id === event.postId);
+    if (postIndex !== -1) {
+      this.posts[postIndex].likes = event.likes;
+    }
+  }
+
+  onCommentsCountChanged(event: { postId: number; count: number }): void {
+    const postIndex = this.posts.findIndex(p => p.id === event.postId);
+    if (postIndex !== -1) {
+      this.posts[postIndex].commentsCount = event.count;
+    }
+  }
+
+  onPostDeleted(postId: number): void {
+    this.postDeleted.emit(postId);
+  }
 }

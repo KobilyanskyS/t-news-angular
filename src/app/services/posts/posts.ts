@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { Post } from '../../models/post';
 import { ApiService } from '../api/api';
 import { User } from '../../models/user';
@@ -10,6 +10,14 @@ import { Comment } from '../../models/comment';
 })
 export class PostsService {
   private api = inject(ApiService);
+
+  createPost(content: string): Observable<Post> {
+    return this.api.post<Post>('api/posts', { content });
+  }
+
+  deletePost(postId: number): Observable<{ success: boolean }> {
+    return this.api.delete<{ success: boolean }>(`api/posts/${postId}`);
+  }
 
   getAllPosts() {
     return forkJoin({
@@ -62,6 +70,18 @@ export class PostsService {
     );
   }
 
+  toggleLike(postId: number): Observable<{ success: boolean; likes: number[] }> {
+    return this.api.post<{ success: boolean; likes: number[] }>('api/likes', { postId });
+  }
+
+  addComment(postId: Post['id'], content: Comment['content']): Observable<{success: boolean; commentId: Comment['id']}> {
+    return this.api.post<{success: boolean, commentId: Comment['id']}>('api/comments', {postId, content});
+  }
+
+  deleteComment(commentId: Comment['id']): Observable<{success: boolean}> {
+    return this.api.delete<{success: boolean}>(`api/comments/${commentId}`);
+  }
+
   private enrichComments(comments: Comment[], users: User[]): Comment[] {
   return comments.map(comment => ({
     ...comment,
@@ -84,4 +104,5 @@ export class PostsService {
     const user = users.find((u) => u.id === userId);
     return user?.avatar || '/Profile.svg';
   }
+
 }

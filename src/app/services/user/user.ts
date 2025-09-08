@@ -26,4 +26,18 @@ export class UserService {
     return this.api.post<{ avatar: string }>('api/user/avatar', { dataUrl });
   }
 
+  subscribe(targetId: number): Observable<{ success: boolean; subscriptions: number[] }> {
+    return this.api.post<{ success: boolean; subscriptions:  User['subscriptions'] }>(
+      'api/subscribe', 
+      { targetId, action: 'subscribe' }
+    );
+  }
+
+  unsubscribe(targetId: number): Observable<{ success: boolean; subscriptions: number[] }> {
+    return this.api.post<{ success: boolean; subscriptions: User['subscriptions'] }>(
+      'api/subscribe', 
+      { targetId, action: 'unsubscribe' }
+    );
+  }
+
 }

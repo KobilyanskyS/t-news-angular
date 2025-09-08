@@ -1,5 +1,11 @@
 <div class="cards">
-    @for (post of posts; track post.id) {
-      <app-post [post]="post"></app-post>
-    }
+  @for (post of posts; track post.id) {
+    <app-post
+      [post]="post"
+      (likeToggled)="onLikeToggled($event)"
+      (commentsCountChanged)="onCommentsCountChanged($event)"
+      (postDeleted)="onPostDeleted($event)"
+    >
+    </app-post>
+  }
 </div>

@@ -44,4 +44,8 @@ export class FeedPage {
       this.isLoading = false;
     });
   }
+
+  onPostDeleted(postId: any): void {
+    this.posts = this.posts.filter(post => post.id !== postId);
+  }
 }

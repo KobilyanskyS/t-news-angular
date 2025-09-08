@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../api/api';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 import { User, UserData } from '../../models/user';
 
 @Injectable({
@@ -93,7 +93,12 @@ export class AuthService {
   logOut(): Observable<{ success: boolean }> {
     return this.api.post<{ success: boolean }>('/api/logout', {}).pipe(
       tap(() => {
-        this.currentUserSubject.next(null);
+        this.clearAuthData();
+      }),
+      catchError((error) => {
+        console.error('Ошибка при выходе:', error);
+        this.clearAuthData();
+        return of({ success: true });
       })
     );
   }
@@ -106,6 +111,7 @@ export class AuthService {
     this.currentUserSubject.next(null);
     localStorage.removeItem('currentUser');
     this.cookieService.delete('user_id');
+    this.cookieService.deleteAll('/');
   }
 
   isAuthenticated = (): boolean => {
@@ -114,5 +120,13 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  updateUserSubscriptions(subscriptions: User['subscriptions']): void {
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, subscriptions };
+      this.setCurrentUser(updatedUser);
+    }
   }
 }

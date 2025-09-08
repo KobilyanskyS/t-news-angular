@@ -6,4 +6,5 @@ export interface Comment {
   content: string;
   author_name: User["name"];
   author_avatar: User["avatar"];
+  created_at?: string;
 }

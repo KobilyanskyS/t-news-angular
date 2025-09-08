@@ -1,11 +1,21 @@
 <div class="comment">
   <div class="comment__header">
     <div class="comment__img">
-      <img [src]="comment.author_avatar" alt="" />
+      <img [src]="comment.author_avatar || '/Profile.svg'" alt="" />
     </div>
-    <a [routerLink]="['/', comment.userId ]" class="comment__name">{{ comment.author_name }}</a>
+    <a [routerLink]="['/', comment.userId]" class="comment__name">{{ comment.author_name || 'Пользователь' }}</a>
   </div>
   <div class="comment__content">
     <p>{{ comment.content }}</p>
+    @if (isAuthor) {
+      <button 
+        class="comment-delete-btn" 
+        (click)="onDelete()"
+        [disabled]="isDeleting"
+        title="Удалить комментарий">
+        <img src="/delete.svg" alt="Удалить" width="16" height="16">
+        {{ isDeleting ? 'Удаление...' : '' }}
+      </button>
+    }
   </div>
 </div>

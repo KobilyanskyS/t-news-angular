@@ -1,8 +1,11 @@
 <div class="card__comments-block">
   <div class="comments">
     @for (comment of comments; track comment.id) {
-      <app-comment [comment]="comment"></app-comment>
+      <app-comment 
+        [comment]="comment" 
+        (commentDeleted)="onCommentDeleted($event)">
+      </app-comment>
     }
   </div>
-  <app-comments-form></app-comments-form>
+  <app-comments-form (commentAdded)="onCommentAdded($event)"></app-comments-form>
 </div>
