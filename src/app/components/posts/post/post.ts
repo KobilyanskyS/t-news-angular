@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import { CommentsBlockComponent } from '../../comments/comments-block/comments-block';
 import { RouterModule } from '@angular/router';
 import { PostsService } from '../../../services/posts/posts';
@@ -8,32 +15,38 @@ import { AuthService } from '../../../services/auth/auth';
   selector: 'app-post',
   imports: [CommentsBlockComponent, RouterModule],
   templateUrl: './post.html',
-  styleUrl: './post.less'
+  styleUrl: './post.less',
 })
 export class PostComponent {
   @Input() set post(value: any) {
     this._post = {
       ...value,
       likes: value?.likes || [],
-      comments: value?.comments || []
+      comments: value?.comments || [],
     };
     this.commentsCount = this._post.comments.length;
   }
 
   @Output() postDeleted = new EventEmitter<number>();
-  
+
   get post(): any {
     return this._post;
   }
-  
+
   private _post: any = {
     likes: [],
-    comments: []
+    comments: [],
   };
-  
-  @Output() likeToggled = new EventEmitter<{ postId: number; likes: number[] }>();
-  @Output() commentsCountChanged = new EventEmitter<{ postId: number; count: number }>();
-  
+
+  @Output() likeToggled = new EventEmitter<{
+    postId: number;
+    likes: number[];
+  }>();
+  @Output() commentsCountChanged = new EventEmitter<{
+    postId: number;
+    count: number;
+  }>();
+
   showComments = false;
   isLiking = false;
   commentsCount = 0;
@@ -41,6 +54,10 @@ export class PostComponent {
 
   postsService = inject(PostsService);
   authService = inject(AuthService);
+
+  showAuthWarning = signal(false);
+  authWarningText =
+    'Чтобы ставить лайки, пожалуйста, войдите или зарегистрируйтесь.';
 
   toggleComments() {
     this.showComments = !this.showComments;
@@ -56,8 +73,9 @@ export class PostComponent {
   onLikeClick(): void {
     const currentUser = this.authService.getCurrentUser();
 
-    if (!currentUser){
-      alert('Чтобы ставить лайки, пожалуйста, войдите или зарегистрируйтесь.');
+    if (!currentUser) {
+      this.showAuthWarning.set(true);
+      setTimeout(() => this.showAuthWarning.set(false), 3000);
       return;
     }
 
@@ -70,7 +88,7 @@ export class PostComponent {
 
           this.likeToggled.emit({
             postId: this.post.id,
-            likes: response.likes
+            likes: response.likes,
           });
         }
       },
@@ -80,8 +98,8 @@ export class PostComponent {
       },
       complete: () => {
         this.isLiking = false;
-      }
-    })
+      },
+    });
   }
 
   onCommentsChanged(): void {
@@ -89,7 +107,7 @@ export class PostComponent {
 
     this.commentsCountChanged.emit({
       postId: this.post.id,
-      count: this.commentsCount
+      count: this.commentsCount,
     });
   }
 
@@ -100,9 +118,9 @@ export class PostComponent {
 
   onDeletePost(): void {
     if (this.isDeleting) return;
-    
+
     this.isDeleting = true;
-    
+
     this.postsService.deletePost(this.post.id).subscribe({
       next: (response) => {
         if (response.success) {
@@ -112,7 +130,7 @@ export class PostComponent {
       error: (error) => {
         console.error('Ошибка при удалении поста:', error);
         this.isDeleting = false;
-      }
+      },
     });
   }
 }

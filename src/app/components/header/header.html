@@ -6,12 +6,17 @@
           <a routerLink="/" class="header__logo"
             ><img src="t-bank.svg" width="29px" alt=""
           /></a>
-          <form class="header__search__form">
+          <form
+            class="header__search__form"
+            (ngSubmit)="onSearchSubmit($event)"
+          >
             <input
               type="text"
               name="search"
               class="header__search"
               placeholder="Поиск по T-News"
+              [value]="searchQuery()"
+              (input)="onSearchInput($event)"
             />
           </form>
         </div>
@@ -24,7 +29,7 @@
             </div>
           </a>
           } @else {
-          <a routerLink="/sign-up" class="header_links__link">
+          <a routerLink="/sign-up" class="header_links__link" id="reg">
             <p>Зарегистрироваться</p>
             <img width="24px" src="arrow-in-right.svg" alt="" />
           </a>

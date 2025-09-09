@@ -32,6 +32,8 @@ export class ProfilePage {
 
   private routeSub: Subscription = new Subscription();
 
+  isAuthenticated = this.authService.isAuthenticated();
+
   isCurrentUser = false;
   isLoggingOut = false;
 
@@ -53,10 +55,15 @@ export class ProfilePage {
   private loadProfileData(): void {
     this.routeSub = this.route.paramMap.subscribe((params) => {
       const userIdParam = params.get('user_id');
-      if (!userIdParam) return;
+
+      if (!userIdParam || isNaN(Number(userIdParam))) {
+        this.router.navigate(['/not-found']);
+        return;
+      }
 
       const userId = Number(userIdParam);
       const currentUser = this.authService.getCurrentUser();
+      this.isAuthenticated = currentUser !== null;
       this.isCurrentUser = currentUser?.id === userId;
 
       this.isLoading = true;
@@ -68,16 +75,21 @@ export class ProfilePage {
         next: ({ posts, user }) => {
           this.posts = posts;
           this.userInfo = user;
-          
+
           if (currentUser && !this.isCurrentUser) {
-            this.isSubscribed = currentUser.subscriptions?.includes(userId) || false;
+            this.isSubscribed =
+              currentUser.subscriptions?.includes(userId) || false;
           }
-          
+
           this.isLoading = false;
         },
         error: (err) => {
           console.error('Ошибка при загрузке данных:', err);
           this.isLoading = false;
+
+          if (err?.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
         },
       });
     });
@@ -232,14 +244,14 @@ export class ProfilePage {
   }
 
   onPostDeleted(postId: any): void {
-    this.posts = this.posts.filter(post => post.id !== postId);
+    this.posts = this.posts.filter((post) => post.id !== postId);
   }
 
-    logout(): void {
+  logout(): void {
     if (this.isLoggingOut) return;
-    
+
     this.isLoggingOut = true;
-    
+
     this.authService.logOut().subscribe({
       next: (response) => {
         if (response.success) {
@@ -254,17 +266,17 @@ export class ProfilePage {
       },
       complete: () => {
         this.isLoggingOut = false;
-      }
+      },
     });
   }
 
-    toggleSubscription(): void {
+  toggleSubscription(): void {
     if (this.isSubscribing || this.isCurrentUser) return;
 
     this.isSubscribing = true;
     const targetUserId = this.userInfo.id;
 
-    const subscriptionAction = this.isSubscribed 
+    const subscriptionAction = this.isSubscribed
       ? this.userService.unsubscribe(targetUserId)
       : this.userService.subscribe(targetUserId);
 
@@ -272,12 +284,12 @@ export class ProfilePage {
       next: (response) => {
         if (response.success) {
           this.isSubscribed = !this.isSubscribed;
-          
+
           const currentUser = this.authService.getCurrentUser();
           if (currentUser) {
             const updatedUser = {
               ...currentUser,
-              subscriptions: response.subscriptions
+              subscriptions: response.subscriptions,
             };
             this.authService.updateUser(updatedUser as User);
           }
@@ -289,7 +301,7 @@ export class ProfilePage {
       },
       complete: () => {
         this.isSubscribing = false;
-      }
+      },
     });
   }
 

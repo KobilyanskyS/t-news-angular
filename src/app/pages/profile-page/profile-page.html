@@ -90,7 +90,7 @@
           </div>
         </div>
         <div class="profile__subscribe-block">
-          @if (!isCurrentUser) {
+          @if (isAuthenticated) { @if (!isCurrentUser) {
           <button
             class="profile__subscribe-button"
             [class.profile__subscribe-button--subscribed]="isSubscribed"
@@ -113,7 +113,7 @@
           >
             {{ isLoggingOut ? "Выход..." : "Выйти" }}
           </button>
-          }
+          } }
         </div>
       </div>
     </div>

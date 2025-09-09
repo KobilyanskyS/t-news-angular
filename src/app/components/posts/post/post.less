@@ -55,6 +55,36 @@
   }
 }
 
+.auth-warning-toast {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  & > div {
+    max-width: 600px;
+    background-color: #ffdc2df1;
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: 16px;
+  }
+
+  z-index: 1000;
+  animation: fadeInOut 3s forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+
 @media (max-width: 576px) {
   .post {
     padding: 16px;

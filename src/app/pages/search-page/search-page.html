@@ -1,0 +1,47 @@
+<div class="wrapper">
+  <main class="main">
+    <div class="filter">
+      <button 
+        class="filter__button" 
+        [class.active]="activeTab === 'users'"
+        (click)="setActiveTab('users')">
+        Пользователи ({{ searchResults.users.length }})
+      </button>
+      <button 
+        class="filter__button" 
+        [class.active]="activeTab === 'posts'"
+        (click)="setActiveTab('posts')">
+        Посты ({{ searchResults.posts.length }})
+      </button>
+    </div>
+
+    <div class="search-results">
+      @if (isLoading) {
+        <div class="loading">Поиск...</div>
+      } @else if (!searchQuery) {
+        <div class="empty-state">Введите поисковый запрос</div>
+      } @else if (activeTab === 'posts') {
+        @if (searchResults.posts.length > 0) {
+          <app-posts-list [posts]="searchResults.posts"></app-posts-list>
+        } @else {
+          <div class="empty-state">Посты не найдены</div>
+        }
+      } @else {
+        @if (searchResults.users.length > 0) {
+          <div class="users">
+            @for (user of searchResults.users; track user.id) {
+              <a [routerLink]="['/', user.id]" class="user">
+                <div class="user__img">
+                  <img [src]="user.avatar || '/Profile.svg'" alt="{{ user.name }}">
+                </div>
+                <h3 class="user__name">{{ user.name || 'Пользователь' }}</h3>
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">Пользователи не найдены</div>
+        }
+      }
+    </div>
+  </main>
+</div>
