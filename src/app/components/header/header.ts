@@ -27,14 +27,14 @@ export class HeaderComponent implements OnDestroy {
   private router = inject(Router);
   private authService = inject(AuthService);
 
-  // --- Signals
+
   searchQuery = signal<string>('');
 
-  // --- Subjects
+
   private searchSubject = new Subject<string>();
   private subscriptions: Subscription[] = [];
 
-  // --- Observables
+
   currentPath$ = this.router.events.pipe(
     filter((e): e is NavigationEnd => e instanceof NavigationEnd),
     map((e) => e.urlAfterRedirects || e.url)

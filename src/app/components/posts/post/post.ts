@@ -28,71 +28,60 @@ export class PostComponent {
   }
 
   @Output() postDeleted = new EventEmitter<number>();
+  @Output() likeToggled = new EventEmitter<{ postId: number; likes: number[] }>();
+  @Output() commentsCountChanged = new EventEmitter<{ postId: number; count: number }>();
+
 
   get post(): any {
     return this._post;
   }
 
-  private _post: any = {
-    likes: [],
-    comments: [],
-  };
 
-  @Output() likeToggled = new EventEmitter<{
-    postId: number;
-    likes: number[];
-  }>();
-  @Output() commentsCountChanged = new EventEmitter<{
-    postId: number;
-    count: number;
-  }>();
-
+  // Внутреннее состояние
+  private _post: any = { likes: [], comments: [] };
   showComments = false;
   isLiking = false;
   commentsCount = 0;
   isDeleting = false;
 
-  postsService = inject(PostsService);
-  authService = inject(AuthService);
 
+  // Сервисы / зависимости
+  private postsService = inject(PostsService);
+  private authService = inject(AuthService);
+
+
+  // Сигналы и тексты
   showAuthWarning = signal(false);
-  authWarningText =
-    'Чтобы ставить лайки, пожалуйста, войдите или зарегистрируйтесь.';
+  authWarningText = 'Чтобы ставить лайки, пожалуйста, войдите или зарегистрируйтесь.';
 
+
+  // Переключение комментариев
   toggleComments() {
     this.showComments = !this.showComments;
   }
 
+
+  // Логика лайков
   get isLiked(): boolean {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser || !this.post.likes) return false;
-
     return this.post.likes.some((id: number) => id === currentUser.id);
   }
 
   onLikeClick(): void {
     const currentUser = this.authService.getCurrentUser();
 
+    // Показать предупреждение если пользователь не авторизован
     if (!currentUser) {
-      this.showAuthWarning.set(true);
-      setTimeout(() => this.showAuthWarning.set(false), 3000);
+      this.showTemporaryAuthWarning();
       return;
     }
 
     this.isLiking = true;
 
     this.postsService.toggleLike(this.post.id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.post.likes = response.likes;
-
-          this.likeToggled.emit({
-            postId: this.post.id,
-            likes: response.likes,
-          });
-        }
-      },
-      error: (error) => {
+      next: (response: any) => this.applyLikeResponse(response),
+      error: (error: any) => {
         console.error('Ошибка при лайке: ', error);
         alert('Не удалось поставить лайк. Попробуйте позже');
       },
@@ -102,15 +91,26 @@ export class PostComponent {
     });
   }
 
-  onCommentsChanged(): void {
-    this.commentsCount = this.post.comments.length;
-
-    this.commentsCountChanged.emit({
-      postId: this.post.id,
-      count: this.commentsCount,
-    });
+  private showTemporaryAuthWarning() {
+    this.showAuthWarning.set(true);
+    setTimeout(() => this.showAuthWarning.set(false), 3000);
   }
 
+  private applyLikeResponse(response: any) {
+    if (!response || !response.success) return;
+    this.post.likes = response.likes;
+    this.likeToggled.emit({ postId: this.post.id, likes: response.likes });
+  }
+
+
+  // Комментарии
+  onCommentsChanged(): void {
+    this.commentsCount = this.post.comments.length;
+    this.commentsCountChanged.emit({ postId: this.post.id, count: this.commentsCount });
+  }
+
+
+  // Удаление поста
   get isAuthor(): boolean {
     const currentUser = this.authService.getCurrentUser();
     return currentUser?.id === this.post.author_id;
@@ -122,12 +122,12 @@ export class PostComponent {
     this.isDeleting = true;
 
     this.postsService.deletePost(this.post.id).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response.success) {
           this.postDeleted.emit(this.post.id);
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Ошибка при удалении поста:', error);
         this.isDeleting = false;
       },

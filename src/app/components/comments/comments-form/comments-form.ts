@@ -9,13 +9,18 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './comments-form.less'
 })
 export class CommentsFormComponent {
+
   @Output() commentAdded = new EventEmitter<string>();
 
   private authService = inject(AuthService);
 
+
+  // Состояние компонента
   commentContent = '';
   isSubmitting = false;
-  
+
+
+  // Геттеры для шаблона
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
@@ -24,11 +29,15 @@ export class CommentsFormComponent {
     return this.authService.getCurrentUser();
   }
 
+
+  // Методы
   onSubmit(): void {
     const content = this.commentContent.trim();
     if (!content || this.isSubmitting) return;
 
     this.isSubmitting = true;
+
+    // Эмитим событие добавления комментария и сбрасываем состояние
     this.commentAdded.emit(content);
     this.commentContent = '';
     this.isSubmitting = false;

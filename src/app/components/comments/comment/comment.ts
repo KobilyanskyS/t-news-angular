@@ -13,14 +13,18 @@ export class CommentComponent {
   @Input() comment!: Comment;
   @Output() commentDeleted = new EventEmitter<number>();
 
+
   private authService = inject(AuthService);
+
 
   isDeleting = false;
 
+
   get isAuthor(): boolean {
     const currentUser = this.authService.getCurrentUser();
-    return currentUser?.id === this.comment.userId;
+    return !!(currentUser && currentUser.id === this.comment.userId);
   }
+
 
   onDelete(): void {
     if (this.isDeleting) return;

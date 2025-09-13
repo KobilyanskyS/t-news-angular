@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header';
-import { AuthService } from './services/auth/auth';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +8,4 @@ import { AuthService } from './services/auth/auth';
   templateUrl: './app.html',
   styleUrl: './app.less'
 })
-export class AppComponent {
-  constructor(private authService: AuthService) { }
-}
+export class AppComponent { }
